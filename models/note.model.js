@@ -33,17 +33,4 @@ noteSchema.set("toJSON", {
   },
 });
 
-// const note = new Note({
-//   content: "Java",
-//   important: true,
-//   date: new Date(),
-// });
-
-//! codigo para agregar notas a la base de datos
-// note.save().then((result) => {
-//   console.log("note saved!");
-//   console.log(result);
-//   mongoose.connection.close();
-// });
-
 export const Note = mongoose.model("Note", noteSchema);

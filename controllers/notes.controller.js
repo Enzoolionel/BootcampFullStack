@@ -1,10 +1,5 @@
 import { Note } from "../models/note.model.js";
 
-// app.get("/api/notes",
-// app.get("/api/notes/:id",
-// app.post("/api/notes",
-// app.delete("/api/notes/:id",
-
 export const getAllNotes = (req, res) => {
   // Busca todas las notas en la base de datos y las envía como respuesta
   Note.find({}).then((result) => {
@@ -16,17 +11,21 @@ export const getNoteId = (req, res) => {
   const { id } = req.params; // Obtiene el ID de los parámetros de la solicitud
 
   // Busca una nota por su ID en la base de datos
-  Note.findById(id).then((note) => {
-    console.log(note);
-    if (!note) {
-      // Si no se encuentra la nota, responde con un error 404
-      res.status(404).json({
-        message: "Note not found",
-      });
-    }
-    // Si se encuentra la nota, la envía como respuesta en formato JSON
-    res.json(note);
-  });
+  Note.findById(id)
+    .then((note) => {
+      console.log(note);
+      if (!note) {
+        // Si no se encuentra la nota, responde con un error 404
+        res.status(404).json({
+          message: "Note not found",
+        });
+      }
+      // Si se encuentra la nota, la envía como respuesta en formato JSON
+      res.json(note);
+    })
+    .catch((err) => {
+      res.status(500).end();
+    });
 };
 
 export const addNote = (req, res) => {
@@ -61,16 +60,20 @@ export const deleteNote = (req, res) => {
       error: "id is missing",
     });
   }
-
-  Note.findByIdAndDelete(id).then((result) => {
-    // Si no se encuentra la nota, responde con un error 404
-    if (!result) {
-      return res.status(404).json({
-        message: "Note not found",
+  Note.findByIdAndDelete(id)
+    .then((result) => {
+      if (!result) {
+        // Si no se encuentra la nota, responder con un 404
+        return res.status(404).json({
+          error: "Note not found",
+        });
+      }
+      res.status(204).end(); // Nota eliminada con éxito
+    })
+    .catch((error) => {
+      console.error("Error deleting the note:", error);
+      res.status(500).json({
+        error: "Internal server error",
       });
-    }
-  });
-
-  // Responde con un estado 204 (sin contenido) para indicar que la eliminación fue exitosa
-  res.status(204).end();
+    });
 };

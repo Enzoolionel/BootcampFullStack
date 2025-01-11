@@ -2,8 +2,6 @@ import express from "express";
 import cors from "cors";
 import notesRouter from "./routes/notes.routes.js";
 
-import { randomUUID } from "crypto";
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 
